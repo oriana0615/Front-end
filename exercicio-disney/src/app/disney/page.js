@@ -18,10 +18,12 @@ export default function Disney(){
     }, [])
     
     return(
-       <Pagina titulo='Disney'>
+       <Pagina titulo='Tabela'>
            
            {personagens.map(item=>(
-                           <p>{item.name}</p>
+                           <p key={item._id}>
+                           {item.name}
+                       </p>
                        ))}
 
        </Pagina>

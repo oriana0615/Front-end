@@ -23,7 +23,7 @@ export default function Tabela() {
 
         <>
 
-            <Pagina titulo='Tabela'>
+            <Pagina titulo='Disney Tabela'>
 
 
 

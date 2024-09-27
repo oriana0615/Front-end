@@ -1,6 +1,5 @@
 'use client'
 
-
 import { Button, Card, Col, Row } from "react-bootstrap";
 import Pagina from "../components/Pagina";
 
@@ -15,18 +14,27 @@ export default function Cards() {
         { id: 4, marca: 'Chevrolet', modelo: 'Chevette', ano: 1973, foto:'/images/chevette-04.jpg'},
         { id: 5, marca: 'Ferrari', modelo: 'Ferrari O', ano: 2018, foto:'/images/ferrari-05.jpg'}
     ];
-
+//
     return (
         <Pagina titulo="Cards">
-            <Row>
+            <Row> {/* Row representa uma linha da tabela*/}
                 {carros.map(item => (
-                    <Col key={item.id} md={4} className="mb-4">
+                    <Col   key={item.id} md={4} className="mt-3"> {/* Col representa uma coluna, mt significa margin top, espaçamento*/}
                         <Card style={{ width: '18rem' }}>
                             <Card.Img variant="top" src={item.foto} />
                             <Card.Body>
-                                <Card.Title>{item.marca} - {item.modelo}</Card.Title>
-                                <Card.Text>
+                                  
+                                <Card.Title>{`${item.marca} - ${item.modelo}`}
+                                
+                                <Row>
+                                    <Col>
                                     <b>Ano</b>:{item.ano}
+                                    </Col>
+                                </Row>
+
+                                </Card.Title>
+                                <Card.Text>
+                                    
                                 </Card.Text>
                                 <Button variant="primary">Detalhes</Button>
                             </Card.Body>

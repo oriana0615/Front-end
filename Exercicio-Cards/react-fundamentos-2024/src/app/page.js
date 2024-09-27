@@ -9,11 +9,12 @@ export default function Home() {
 
       <Cabecalho titulo="Oriana" subtitulo="Teste Sub" />
       <Cabecalho titulo="Frontend" />
-      <Cabecalho titulo="Cabeçalho" />
-      <Cabecalho titulo="React" />
-
-      <Link href="/fundamentos">Página Fundamentos</Link><br />
-      <Link href="/cards">Página do Exercício de Cards</Link><br />
+      <div style={{ marginBottom: '40px' }}>
+        <Link href="/cards">Página do Exercício de Cards</Link>
+      </div>
+      <div>
+        <Link href="/fundamentos">Página Fundamentos</Link>
+      </div>
 
     </main>
   );

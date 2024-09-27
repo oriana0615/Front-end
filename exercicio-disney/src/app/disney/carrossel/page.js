@@ -19,34 +19,26 @@ export default function Carrossel() {
 
     return (
 
-        <>
-             <Pagina titulo="Disney Carrossel">
-      <Carousel interval={3000}>
         
-        {/*Coloquei só a imagem dentro do loop, assim não forma vários carroseis ao memos tempo,
-        dentro do loop só coloco a parte que quero repetir */}
+             <Pagina titulo="Disney Carrossel">
+             <Carousel className="mt-3" style={{width: 800}}>
+        
 
         {princesas.map((item) => (
           <Carousel.Item key={item._id}>
             
-            <Image
-              src={item.imageUrl}
-              alt={item.name}
-              style={{ width: '450px',  height: 'auto',  margin: '0 auto', display: 'block'  
-              }}
-            />
-
-            <Carousel.Caption>
-              <h3>{item.name}</h3>
-              <p>{item.description || 'Descrição não disponível.'}</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-        ))}
+            <img className="d-block auto" width={700} height={350} src={item.imageUrl} />
+                        <Carousel.Caption>
+                            <h3>{item.name}</h3>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                ))}
+         
+      
       </Carousel>
     </Pagina>
 
 
-        </>
 
 
 

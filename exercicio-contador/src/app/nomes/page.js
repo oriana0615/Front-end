@@ -17,12 +17,10 @@ export default function Page() {
     }
 
     return (
-        <>
-            <Pagina titulo='Titulo'></Pagina>
-             <h1>{nome}</h1>
-             {/*Chamo minha função de alterar nome ao clicar no meu botão*/}
+        <Pagina titulo={"Nomes: " + nome}>
+            <h1>{nome}</h1>
             <Button onClick={alterarNome}>Alterar Nome</Button>
-        </>
+        </Pagina>
     )
 
 }

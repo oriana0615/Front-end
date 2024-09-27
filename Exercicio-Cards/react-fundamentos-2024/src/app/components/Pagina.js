@@ -8,6 +8,7 @@ export default function Pagina(props) {
                     <Navbar.Brand href="#home">Sistema Acadêmico</Navbar.Brand>
                     <Nav className="me-auto">
                         <Nav.Link href="#home">Página 1</Nav.Link>
+                        <Nav.Link href="#home">Página 2</Nav.Link>
                         <Nav.Link href="/array">Array</Nav.Link>
                         <Nav.Link href="/cards">Cards</Nav.Link>
                     </Nav>
