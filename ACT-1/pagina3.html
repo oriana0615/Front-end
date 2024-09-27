@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #d83f3f;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            width: 100%;
+        }
+
+        nav {
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #b9390e;
+            font-weight: bold;
+            margin: 0 15px;
+            display: inline-block;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            margin: 20px 0;
+        }
+
+        label {
+            margin-top: 10px;
+            display: block;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* Para incluir padding na largura */
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin: 10px 0;
+        }
+
+        fieldset {
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        legend {
+            font-weight: bold;
+        }
+
+        input[type="submit"],
+        input[type="reset"] {
+            background-color: #d83f3f;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 10px 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover,
+        input[type="reset"]:hover {
+            background-color: #b9390e;
+        }
+
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Formulário de Usuários</h1>
+    </header>
+
+    <nav>
+        <a href="index.html"><i class="fas fa-home"></i>Página Principal</a>
+        <a href="pagina2.html"><i class="fas fa-table"></i>Tabelas</a>
+    </nav>
+
+    <form action="" method="post">
+
+        <label for="nome">Nome:</label>
+        <input type="text" name="nome" id="nome" required />
+
+        <label for="telefone">Telefone:</label>
+        <input type="text" name="telefone" id="telefone" required />
+
+        <label for="email">E-mail:</label>
+        <input type="text" name="email" id="email" required />
+
+        <label for="senha">Senha:</label>
+        <input type="password" name="senha" id="senha" required />
+
+        <label>Sexo:</label>
+        <input type="radio" name="s

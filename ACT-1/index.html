@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #d83f3f;
+            color: white;
+            padding: 1rem;
+            width: 100%; /* Certifica-se de que o cabeçalho ocupe toda a largura */
+            display: flex; /* Alinha os itens horizontalmente */
+            flex-direction: column; /* Alinha logo e título em coluna */
+            align-items: center; /* Centraliza os itens */
+        }
+
+        header img {
+            max-width: 120px; /* Tamanho ajustado do logo */
+            height: auto; /* Mantém a proporção do logo */
+            margin-bottom: 10px; /* Espaço entre o logo e o título */
+            transition: transform 0.2s; /* Efeito de transição suave */
+        }
+
+        header img:hover {
+            transform: scale(1.1); /* Aumenta ligeiramente o tamanho do logo ao passar o mouse */
+        }
+
+        header h1 {
+            margin: 0;
+            text-align: center; /* Alinha o título ao centro */
+        }
+
+        nav {
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #b9390e;
+            font-size: 18px;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #333;
+        }
+
+        h2 {
+            color: #db0b00;
+            margin-top: 40px;
+        }
+
+        p {
+            padding: 0 20px;
+            text-align: justify;
+        }
+
+        img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            height: auto;
+        }
+
+        ul,
+        ol {
+            padding: 0 40px;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 40px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column; /* Mantém a coluna em telas menores */
+                align-items: center; /* Alinha os itens ao centro em telas menores */
+            }
+
+            header img {
+                margin-bottom: 10px; /* Espaço entre o logo e o título em telas menores */
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            p,
+            ul,
+            ol {
+                padding: 0 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="https://www.iesb.br/content/themes/iesb-chleba-themosis/assets/imagens/logo.png" alt="Logo do IESB - Instituto de Educação Superior de Brasília">
+        <h1>Bem-vindo à Página Principal</h1>
+    </header>
+
+    <nav>
+        <a href="pagina2.html">Tabelas</a>
+        <a href="pagina3.html">Formulário</a>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Parágrafos</h2>
+            <p>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quas amet minus laudantium ducimus neque aspernatur
+                nam magni beatae alias, culpa doloremque obcaecati maxime expedita esse voluptate placeat. Maxime, asperiores
+                adipisci!
+            </p>
+            <p>
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa, officiis sunt tempore aliquid exercitationem
+                adipisci minus esse cum quo sit deserunt reiciendis veniam dolor laboriosam facere animi, asperiores in
+                similique.
+            </p>
+            <p>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. In, laborum assumenda porro, eaque, cupiditate veniam
+                quasi nemo perspiciatis unde alias pariatur dicta optio sapiente neque quas amet officia adipisci aperiam!
+            </p>
+        </section>
+
+        <section>
+            <h2>Imagens</h2>
+            <img src="img/forest-8647829_640.jpg" alt="Imagem de uma floresta" width="200" />
+            <img src="https://cdn.pixabay.com/photo/2023/05/11/03/34/baseball-7985433_1280.jpg"
+                alt="Imagem de uma bola de beisebol" width="200" />
+        </section>
+
+        <section>
+            <h2>Links</h2>
+            <p><a href="https://www.google.com.br/?hl=pt-BR" target="_blank">Clique aqui para ir para o Google</a></p>
+        </section>
+
+        <section>
+            <h2>Listas</h2>
+            <h3>Listas Não Ordenadas</h3>
+            <ul>
+                <li>Distrito Federal
+                    <ul>
+                        <li>Ceilândia</li>
+                        <li>Taguatinga</li>
+                        <li>Asa Sul</li>
+                    </ul>
+                </li>
+                <li>Goiás</li>
+                <li>São Paulo</li>
+            </ul>
+
+            <h3>Listas Ordenadas</h3>
+            <ol>
+                <li>Distrito Federal
+                    <ol>
+                        <li>Ceilândia</li>
+                        <li>Taguatinga</li>
+                        <li>Asa Sul</li>
+                    </ol>
+                </li>
+                <li>Goiás</li>
+                <li>São Paulo</li>
+            </ol>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Sua Página Web. Todos os direitos reservados.</p>
+    </footer>
+</body>
+
+</html>
