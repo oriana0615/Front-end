@@ -1,20 +1,39 @@
-"use client"; // Indica que este é um componente de cliente
+"use client"; 
 
 import Pagina from "@/app/components/Pagina";
 import { Formik } from "formik";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Importa de next/navigation
+import { useRouter } from "next/navigation"; 
 import { Button, Form, FormControl, Alert } from "react-bootstrap";
 import { FaCheck } from "react-icons/fa";
 import { MdOutlineArrowBack } from "react-icons/md";
 import * as Yup from "yup";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function Page() {
+export default function Page({ params }) {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
+  const [passagem, setPassagem] = useState({
+    vooId: '',
+    passageiroId: '',
+    assento: '',
+    preco: '',
+  });
 
-  // Esquema de validação com Yup
+  const passagens = JSON.parse(localStorage.getItem('passagens')) || [];
+  const passagemId = params?.id ? parseInt(params.id) : null;
+
+  // Carregar os dados da passagem ao entrar na página de edição
+  useEffect(() => {
+    if (passagemId) {
+      const passagemEncontrada = passagens.find(item => item.id === passagemId);
+      if (passagemEncontrada) {
+        setPassagem(passagemEncontrada); // Preenche os campos com os dados da passagem
+      }
+    }
+  }, [passagemId]);
+
+  // Validação com Yup
   const validationSchema = Yup.object({
     vooId: Yup.number()
       .typeError("Voo Id deve ser um número")
@@ -39,60 +58,39 @@ export default function Page() {
 
   function salvarPassagem(dados) {
     try {
-      const passagensSalvas = JSON.parse(localStorage.getItem("passagens")) || [];
+      if (passagemId) {
+        const index = passagens.findIndex(item => item.id === passagemId);
+        passagens[index] = { id: passagemId, ...dados }; // Atualiza os dados da passagem
+      } else {
+        const novoId = passagens.length > 0 ? Math.max(...passagens.map(p => p.id)) + 1 : 1;
+        passagens.push({ id: novoId, ...dados });
+      }
 
-      // Gerar ID único
-      const novoId = passagensSalvas.length > 0 ? Math.max(...passagensSalvas.map(p => p.id)) + 1 : 1;
-
-      const novaPassagem = {
-        id: novoId,
-        vooId: parseInt(dados.vooId, 10),
-        passageiroId: parseInt(dados.passageiroId, 10),
-        assento: dados.assento,
-        preco: parseFloat(dados.preco),
-      };
-
-      passagensSalvas.push(novaPassagem);
-      localStorage.setItem("passagens", JSON.stringify(passagensSalvas));
-
-      // Redirecionar com parâmetro de sucesso
+      localStorage.setItem("passagens", JSON.stringify(passagens));
       router.push("/passagem?success=true");
     } catch (error) {
       console.error("Erro ao salvar passagem:", error);
-      setErrorMessage("Ocorreu um erro ao salvar a passagem. Por favor, tente novamente.");
+      setErrorMessage("Ocorreu um erro ao salvar a passagem. Tente novamente.");
     }
   }
 
+  //Retorno de la pagina
   return (
-    <Pagina titulo="Nova Passagem">
+    <Pagina titulo={passagemId ? "Editar Passagem" : "Nova Passagem"}>
       {errorMessage && (
         <Alert variant="danger" onClose={() => setErrorMessage("")} dismissible>
           {errorMessage}
         </Alert>
       )}
       <Formik
-        initialValues={{
-          vooId: '',
-          passageiroId: '',
-          assento: '',
-          preco: '',
-        }}
+        enableReinitialize // Isso garante que o Formik será atualizado quando a passagem mudar
+        initialValues={passagem}
         validationSchema={validationSchema}
-        onSubmit={(values, { resetForm }) => {
-          salvarPassagem(values);
-          resetForm();
-        }}
+        onSubmit={salvarPassagem}
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleSubmit,
-          handleBlur,
-        }) => (
+        {({ values, errors, touched, handleChange, handleSubmit, handleBlur }) => (
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="vooId">
+            <Form.Group controlId="vooId">
               <Form.Label>Voo Id</Form.Label>
               <FormControl
                 type="number"
@@ -101,14 +99,13 @@ export default function Page() {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 isInvalid={touched.vooId && !!errors.vooId}
-                placeholder="Digite o Voo Id"
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.vooId}
-              </Form.Control.Feedback>
+              {touched.vooId && errors.vooId && (
+                <Form.Control.Feedback type="invalid">{errors.vooId}</Form.Control.Feedback>
+              )}
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="passageiroId">
+            <Form.Group controlId="passageiroId">
               <Form.Label>Passageiro Id</Form.Label>
               <FormControl
                 type="number"
@@ -117,14 +114,13 @@ export default function Page() {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 isInvalid={touched.passageiroId && !!errors.passageiroId}
-                placeholder="Digite o Passageiro Id"
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.passageiroId}
-              </Form.Control.Feedback>
+              {touched.passageiroId && errors.passageiroId && (
+                <Form.Control.Feedback type="invalid">{errors.passageiroId}</Form.Control.Feedback>
+              )}
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="assento">
+            <Form.Group controlId="assento">
               <Form.Label>Assento</Form.Label>
               <FormControl
                 type="text"
@@ -133,14 +129,13 @@ export default function Page() {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 isInvalid={touched.assento && !!errors.assento}
-                placeholder="Digite o Assento"
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.assento}
-              </Form.Control.Feedback>
+              {touched.assento && errors.assento && (
+                <Form.Control.Feedback type="invalid">{errors.assento}</Form.Control.Feedback>
+              )}
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="preco">
+            <Form.Group controlId="preco">
               <Form.Label>Preço</Form.Label>
               <FormControl
                 type="number"
@@ -149,12 +144,11 @@ export default function Page() {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 isInvalid={touched.preco && !!errors.preco}
-                placeholder="Digite o Preço"
                 step="0.01"
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.preco}
-              </Form.Control.Feedback>
+              {touched.preco && errors.preco && (
+                <Form.Control.Feedback type="invalid">{errors.preco}</Form.Control.Feedback>
+              )}
             </Form.Group>
 
             <div className="text-center">

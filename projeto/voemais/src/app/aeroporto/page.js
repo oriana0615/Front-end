@@ -6,6 +6,8 @@ import { Table, Alert } from "react-bootstrap";
 import { FaPlusCircle } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { MdDelete } from "react-icons/md";
+import { FaRegEdit } from "react-icons/fa";
 
 export default function Page() {
   const [aeroportos, setAeroportos] = useState([]);
@@ -17,6 +19,14 @@ export default function Page() {
     setAeroportos(aeroportosSalvos);
   }, []);
 
+  function excluir(id) {
+    if (confirm('Deseja realmente excluir o registro?')) {
+      const novosAeroportos = aeroportos.filter(item => item.id !== id);
+      localStorage.setItem('aeroporto', JSON.stringify(novosAeroportos));
+      setAeroportos(novosAeroportos);
+    }
+  }
+
   return (
     <Pagina titulo="Aeroportos">
       {success && (
@@ -24,7 +34,7 @@ export default function Page() {
           Aeroporto cadastrado com sucesso!
         </Alert>
       )}
-      <Link href="/aeroporto/create" className="btn btn-primary mb-3">
+      <Link href="/aeroporto/form" className="btn btn-primary mb-3">
         <FaPlusCircle /> Novo Aeroporto
       </Link>
 
@@ -38,11 +48,11 @@ export default function Page() {
             <th>Cidade</th>
             <th>País</th>
             <th>Logo</th>
+            <th>Ações</th>
           </tr>
         </thead>
-
         <tbody>
-          {aeroportos.map((item) => (
+          {aeroportos.map(item => (
             <tr key={item.id}>
               <td>{item.id}</td>
               <td>{item.nome}</td>
@@ -58,6 +68,16 @@ export default function Page() {
                 ) : (
                   "Sem Logo"
                 )}
+              </td>
+              <td>
+                <Link href={`/aeroporto/form/${item.id}`}>
+                  <FaRegEdit title="Editar" className="text-primary" />
+                </Link>
+                <MdDelete
+                  title="Excluir"
+                  className="text-danger"
+                  onClick={() => excluir(item.id)}
+                />
               </td>
             </tr>
           ))}

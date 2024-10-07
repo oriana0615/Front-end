@@ -1,50 +1,70 @@
-"use client";
-import Pagina from "@/app/components/Pagina";
+'use client'
+import { MdDelete } from "react-icons/md";
+import { FaRegEdit } from "react-icons/fa";
+import { FaPlusCircle } from "react-icons/fa";
+import Pagina from "../components/Pagina";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Table } from "react-bootstrap";
-import { FaPlusCircle } from "react-icons/fa";
+
 
 export default function Page() {
-  const empresas = JSON.parse(localStorage.getItem("empresas")) || [];
 
-  // let empresas = localStorage.getItem('empresas')
+    const [empresas, setEmpresas] = useState([])
 
-  // if (empresas) {
-  //   empresas = JSON.parse(empresas)
+    useEffect(() => {
+        setEmpresas(JSON.parse(localStorage.getItem('empresas')) || [])
+    }, [])
 
-  // } else {
-  //   empresas = []
-  // }
+    function excluir(id) {
+        if (confirm('Deseja realmente excluir o registro?')) {
+            const dados = empresas.filter(item => item.id != id)
+            localStorage.setItem('empresas', JSON.stringify(dados))
+            setEmpresas(dados)
+        }
+    }
 
-  return (
-    <Pagina titulo="Empresas">
-      <Link href="/empresas/create" className="btn btn-primary mb-3">
-        <FaPlusCircle /> Novo
-      </Link>
+    return (
+        <Pagina titulo="Empresas">
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nome</th>
-            <th>Logo</th>
-          </tr>
-        </thead>
+            <Link
+                href="/empresas/form"
+                className="btn btn-primary mb-3"
+            >
+                <FaPlusCircle /> Novo
+            </Link>
 
-        <tbody>
-          {empresas.map((item) => (
-            <tr>
-              <td>1</td>
-              <td>{item.nome}</td>
-              <td>
-                <a href={item.site} target="_blank">
-                  <img src={item.logo} width={100} />
-                </a>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </Pagina>
-  );
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nome</th>
+                        <th>Logo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {empresas.map((item, i) => (
+                        <tr key={item.id}>
+                            <td>
+                                <Link href={`/empresas/form/${item.id}`}>
+                                    <FaRegEdit title="Editar" className="text-primary" />
+                                </Link>
+                                <MdDelete
+                                    title="Excluir"
+                                    className="text-danger"
+                                    onClick={() => excluir(item.id)}
+                                />
+                            </td>
+                            <td>{item.nome}</td>
+                            <td>
+                                <a href={item.site} target="_blank">
+                                    <img src={item.logo} width={100} />
+                                </a>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
+        </Pagina>
+    )
 }

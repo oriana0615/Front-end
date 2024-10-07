@@ -1,9 +1,10 @@
-"use client"; // Indica que este é um componente de cliente
+"use client"; 
 
 import Pagina from "@/app/components/Pagina";
 import Link from "next/link";
 import { Table, Alert } from "react-bootstrap";
-import { FaPlusCircle } from "react-icons/fa";
+import { FaPlusCircle, FaRegEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -17,11 +18,20 @@ export default function Page() {
     setPassageiros(passageirosSalvos);
   }, []);
 
+  // Função para excluir passageiro
+  function excluir(id) {
+    if (confirm('Deseja realmente excluir o passageiro?')) {
+      const novosPassageiros = passageiros.filter(item => item.id !== id);
+      localStorage.setItem('passageiros', JSON.stringify(novosPassageiros));
+      setPassageiros(novosPassageiros);
+    }
+  }
+
   // Função para formatar a data no formato DD/MM/YYYY
   const formatarData = (data) => {
     const dataObj = new Date(data);
     const dia = String(dataObj.getDate()).padStart(2, '0');
-    const mes = String(dataObj.getMonth() + 1).padStart(2, '0'); // Meses começam em 0
+    const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
     const ano = dataObj.getFullYear();
     return `${dia}/${mes}/${ano}`;
   };
@@ -33,7 +43,7 @@ export default function Page() {
           Passageiro cadastrado com sucesso!
         </Alert>
       )}
-      <Link href="/passageiro/create" className="btn btn-primary mb-3">
+      <Link href="/passageiro/form" className="btn btn-primary mb-3">
         <FaPlusCircle /> Novo Passageiro
       </Link>
 
@@ -46,7 +56,8 @@ export default function Page() {
             <th>Documento</th>
             <th>Email</th>
             <th>Telefone</th>
-            <th>Data de Nascimento</th> {/* Nova Coluna */}
+            <th>Data de Nascimento</th>
+            <th>Ações</th>
           </tr>
         </thead>
 
@@ -59,7 +70,17 @@ export default function Page() {
               <td>{passageiro.documento}</td>
               <td>{passageiro.email}</td>
               <td>{passageiro.telefone}</td>
-              <td>{formatarData(passageiro.dat_nascimento)}</td> {/* Exibe a data formatada */}
+              <td>{formatarData(passageiro.dat_nascimento)}</td>
+              <td>
+                <Link href={`/passageiro/form/${passageiro.id}`}>
+                  <FaRegEdit title="Editar" className="text-primary" />
+                </Link>
+                <MdDelete
+                  title="Excluir"
+                  className="text-danger"
+                  onClick={() => excluir(passageiro.id)}
+                />
+              </td>
             </tr>
           ))}
         </tbody>
