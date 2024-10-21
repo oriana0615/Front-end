@@ -1,195 +1,193 @@
-'use client';
+"use client"; 
 
 import Pagina from "@/app/components/Pagina";
-import { Formik } from "formik";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; 
-import { Button, Form, FormControl, Alert } from "react-bootstrap";
-import { FaCheck } from "react-icons/fa";
-import { MdOutlineArrowBack } from "react-icons/md";
-import * as Yup from "yup";
-import { useState, useEffect } from "react";
+import { Table, Alert } from "react-bootstrap";
+import { FaPlusCircle, FaRegEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Formik } from "formik";
+import { Button, Form, FormControl } from "react-bootstrap";
+import PassagemValidator from "@/validators/PassagemValidator"; // Novo validador para passagem
+// import * as Yup from 'yup';  // <- uso do Yup, agora comentado
 
 export default function Page({ params }) {
-  const router = useRouter();
-  const [errorMessage, setErrorMessage] = useState("");
-  const [passageiro, setPassageiro] = useState({
-    nome: '',
-    tipo_documento: '',
-    documento: '',
-    email: '',
-    telefone: '',
-    dat_nascimento: '',
+  const [passagens, setPassagens] = useState([]);
+  const searchParams = useSearchParams();
+  const success = searchParams.get("success");
+  const [passagem, setPassagem] = useState({
+    vooId: '',
+    passageiroId: '',
+    assento: '',
+    preco: ''
   });
 
-  const passageiros = JSON.parse(localStorage.getItem('passageiros')) || [];
-  const passageiroId = params?.id ? parseInt(params.id) : null;
+  const passagensSalvas = JSON.parse(localStorage.getItem('passagens')) || [];
+  const passagemId = params?.id ? parseInt(params.id) : null;
 
-  // Carregar os dados do passageiro ao entrar na página de edição
+  // Carregar os dados da passagem ao entrar na página de edição
   useEffect(() => {
-    if (passageiroId) {
-      const passageiroEncontrado = passageiros.find(item => item.id === passageiroId);
-      if (passageiroEncontrado) {
-        setPassageiro(passageiroEncontrado); // Preenche os campos com os dados do passageiro
+    if (passagemId) {
+      const passagemEncontrada = passagensSalvas.find(item => item.id === passagemId);
+      if (passagemEncontrada) {
+        setPassagem(passagemEncontrada); // Preenche os campos com os dados da passagem
       }
     }
-  }, [passageiroId]);
+  }, [passagemId]);
 
-  // Validação com Yup
-  const validationSchema = Yup.object({
-    nome: Yup.string().min(3).max(50).required("Nome é obrigatório"),
-    tipo_documento: Yup.string()
-      .oneOf(["RG", "DNI", "CNH", "Título de eleitor eletrônico", "Passaporte válido"])
-      .required("Tipo de Documento é obrigatório"),
-    documento: Yup.string()
-      .matches(/^\d+$/, "Documento deve conter apenas números")
-      .min(7).max(20)
-      .required("Documento é obrigatório"),
-    email: Yup.string().email("Email inválido").required("Email é obrigatório"),
-    telefone: Yup.string()
-      .matches(/^\d{10,15}$/, "Telefone deve conter entre 10 e 15 dígitos")
-      .required("Telefone é obrigatório"),
-    dat_nascimento: Yup.date()
-      .max(new Date(), "Data de Nascimento não pode ser futura")
-      .required("Data de Nascimento é obrigatória"),
-  });
+ 
+  const formatarPreco = (preco) => {
+    return preco.toFixed(2);
+  };
 
-  function salvarPassageiro(dados) {
+  // Função para excluir passagem
+  function excluir(id) {
+    if (confirm('Deseja realmente excluir a passagem?')) {
+      const novasPassagens = passagens.filter(item => item.id !== id);
+      localStorage.setItem('passagens', JSON.stringify(novasPassagens));
+      setPassagens(novasPassagens);
+    }
+  }
+
+  // (novo ou atualizado)
+  function salvarPassagem(dados) {
     try {
-      if (passageiroId) {
-        const index = passageiros.findIndex(item => item.id === passageiroId);
-        passageiros[index] = { id: passageiroId, ...dados }; // Atualiza os dados do passageiro
+      if (passagemId) {
+        const index = passagensSalvas.findIndex(item => item.id === passagemId);
+        passagensSalvas[index] = { id: passagemId, ...dados }; // Atualiza os dados da passagem
       } else {
-        const novoId = passageiros.length > 0 ? Math.max(...passageiros.map(p => p.id)) + 1 : 1;
-        passageiros.push({ id: novoId, ...dados });
+        dados.id = v4(); // Gerando ID único para nova passagem
+        passagensSalvas.push(dados);
       }
 
-      localStorage.setItem("passageiros", JSON.stringify(passageiros));
-      router.push("/passageiro?success=true");
+      localStorage.setItem("passagens", JSON.stringify(passagensSalvas));
     } catch (error) {
-      console.error("Erro ao salvar passageiro:", error);
-      setErrorMessage("Ocorreu um erro ao salvar o passageiro. Tente novamente.");
+      console.error("Erro ao salvar passagem:", error);
     }
   }
 
   return (
-    <Pagina titulo={passageiroId ? "Editar Passageiro" : "Novo Passageiro"}>
-      {errorMessage && (
-        <Alert variant="danger" onClose={() => setErrorMessage("")} dismissible>
-          {errorMessage}
+    <Pagina titulo="Passagens">
+      {success && (
+        <Alert variant="success">
+          Passagem cadastrada com sucesso!
         </Alert>
       )}
+
+      <Link href="/passagem/form" className="btn btn-primary mb-3">
+        <FaPlusCircle /> Nova Passagem
+      </Link>
+
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Voo Id</th>
+            <th>Passageiro Id</th>
+            <th>Assento</th>
+            <th>Preço</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {passagensSalvas.map((passagem) => (
+            <tr key={passagem.id}>
+              <td>{passagem.id}</td>
+              <td>{passagem.vooId}</td>
+              <td>{passagem.passageiroId}</td>
+              <td>{passagem.assento}</td>
+              <td>R$ {formatarPreco(passagem.preco)}</td>
+              <td>
+                <Link href={`/passagem/form/${passagem.id}`}>
+                  <FaRegEdit title="Editar" className="text-primary" />
+                </Link>
+                <MdDelete
+                  title="Excluir"
+                  className="text-danger"
+                  onClick={() => excluir(passagem.id)}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
       <Formik
-        enableReinitialize // Isso garante que o Formik será atualizado quando o passageiro mudar
-        initialValues={passageiro}
-        validationSchema={validationSchema}
-        onSubmit={salvarPassageiro}
+        enableReinitialize
+        initialValues={passagem}
+        validationSchema={PassagemValidator} // Novo validador
+        onSubmit={salvarPassagem}
       >
         {({ values, errors, touched, handleChange, handleSubmit, handleBlur }) => (
           <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="nome">
-              <Form.Label>Nome</Form.Label>
+            <Form.Group controlId="vooId">
+              <Form.Label>Voo ID</Form.Label>
               <FormControl
                 type="text"
-                name="nome"
-                value={values.nome}
+                name="vooId"
+                value={values.vooId}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                isInvalid={touched.nome && !!errors.nome}
+                isInvalid={touched.vooId && !!errors.vooId}
               />
-              {touched.nome && errors.nome && (
-                <Form.Control.Feedback type="invalid">{errors.nome}</Form.Control.Feedback>
+              {touched.vooId && errors.vooId && (
+                <Form.Control.Feedback type="invalid">{errors.vooId}</Form.Control.Feedback>
               )}
             </Form.Group>
 
-            <Form.Group controlId="tipo_documento">
-              <Form.Label>Tipo de Documento</Form.Label>
-              <FormControl
-                as="select"
-                name="tipo_documento"
-                value={values.tipo_documento}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                isInvalid={touched.tipo_documento && !!errors.tipo_documento}
-              >
-                <option value="">Selecione o tipo de documento</option>
-                <option value="RG">RG</option>
-                <option value="DNI">DNI</option>
-                <option value="CNH">CNH</option>
-                <option value="Título de eleitor eletrônico">Título de eleitor eletrônico</option>
-                <option value="Passaporte válido">Passaporte válido</option>
-              </FormControl>
-              {touched.tipo_documento && errors.tipo_documento && (
-                <Form.Control.Feedback type="invalid">{errors.tipo_documento}</Form.Control.Feedback>
-              )}
-            </Form.Group>
-
-            <Form.Group controlId="documento">
-              <Form.Label>Documento</Form.Label>
+            <Form.Group controlId="passageiroId">
+              <Form.Label>Passageiro ID</Form.Label>
               <FormControl
                 type="text"
-                name="documento"
-                value={values.documento}
+                name="passageiroId"
+                value={values.passageiroId}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                isInvalid={touched.documento && !!errors.documento}
+                isInvalid={touched.passageiroId && !!errors.passageiroId}
               />
-              {touched.documento && errors.documento && (
-                <Form.Control.Feedback type="invalid">{errors.documento}</Form.Control.Feedback>
+              {touched.passageiroId && errors.passageiroId && (
+                <Form.Control.Feedback type="invalid">{errors.passageiroId}</Form.Control.Feedback>
               )}
             </Form.Group>
 
-            <Form.Group controlId="email">
-              <Form.Label>Email</Form.Label>
-              <FormControl
-                type="email"
-                name="email"
-                value={values.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                isInvalid={touched.email && !!errors.email}
-              />
-              {touched.email && errors.email && (
-                <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-              )}
-            </Form.Group>
-
-            <Form.Group controlId="telefone">
-              <Form.Label>Telefone</Form.Label>
+            <Form.Group controlId="assento">
+              <Form.Label>Assento</Form.Label>
               <FormControl
                 type="text"
-                name="telefone"
-                value={values.telefone}
+                name="assento"
+                value={values.assento}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                isInvalid={touched.telefone && !!errors.telefone}
+                isInvalid={touched.assento && !!errors.assento}
               />
-              {touched.telefone && errors.telefone && (
-                <Form.Control.Feedback type="invalid">{errors.telefone}</Form.Control.Feedback>
+              {touched.assento && errors.assento && (
+                <Form.Control.Feedback type="invalid">{errors.assento}</Form.Control.Feedback>
               )}
             </Form.Group>
 
-            <Form.Group controlId="dat_nascimento">
-              <Form.Label>Data de Nascimento</Form.Label>
+            <Form.Group controlId="preco">
+              <Form.Label>Preço</Form.Label>
               <FormControl
-                type="date"
-                name="dat_nascimento"
-                value={values.dat_nascimento}
+                type="number"
+                name="preco"
+                value={values.preco}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                isInvalid={touched.dat_nascimento && !!errors.dat_nascimento}
+                isInvalid={touched.preco && !!errors.preco}
               />
-              {touched.dat_nascimento && errors.dat_nascimento && (
-                <Form.Control.Feedback type="invalid">{errors.dat_nascimento}</Form.Control.Feedback>
+              {touched.preco && errors.preco && (
+                <Form.Control.Feedback type="invalid">{errors.preco}</Form.Control.Feedback>
               )}
             </Form.Group>
 
             <div className="text-center">
               <Button type="submit" variant="success">
-                <FaCheck /> Salvar
+                Salvar
               </Button>
-              <Link href="/passageiro" className="btn btn-danger ms-2">
-                <MdOutlineArrowBack /> Voltar
+              <Link href="/passagem" className="btn btn-danger ms-2">
+                Voltar
               </Link>
             </div>
           </Form>

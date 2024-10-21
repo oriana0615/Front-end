@@ -7,8 +7,8 @@ import { useRouter, useParams } from "next/navigation";
 import { Button, Form, FormControl, Alert } from "react-bootstrap";
 import { FaCheck } from "react-icons/fa";
 import { MdOutlineArrowBack } from "react-icons/md";
-import * as Yup from "yup";
 import { useEffect, useState } from "react";
+import VooValidator from "@/validators/VooValidator"; // Importa tu validador
 
 export default function VooFormPage() {
   const router = useRouter();
@@ -33,10 +33,10 @@ export default function VooFormPage() {
       const voos = JSON.parse(localStorage.getItem("voos")) || [];
       const voo = voos.find(v => v.identificador === identificador);
       if (voo) {
-        // Formate las fechas para que sean compatibles con datetime-local
+        // Formate as datas para que sejam compatíveis com datetime-local
         const formatDateForInput = (date) => {
           const dataObj = new Date(date);
-          const tzOffset = dataObj.getTimezoneOffset() * 60000; // offset en milisegundos
+          const tzOffset = dataObj.getTimezoneOffset() * 60000; // offset em milissegundos
           const localISOTime = new Date(dataObj - tzOffset).toISOString().slice(0, 16);
           return localISOTime;
         };
@@ -50,7 +50,8 @@ export default function VooFormPage() {
     }
   }, [identificador]);
 
-  const validationSchema = Yup.object({
+  // Validaciones de Yup
+  /* const validationSchema = Yup.object({
     internacional: Yup.boolean(),
     identificador: Yup.string()
       .min(3, "Identificador deve ter pelo menos 3 caracteres")
@@ -64,17 +65,31 @@ export default function VooFormPage() {
     id_destino: Yup.number().positive().integer().required("ID de Destino é obrigatório"),
     empresa_id: Yup.number().positive().integer().required("ID da Empresa é obrigatório"),
     preco: Yup.number().positive().required("Preço é obrigatório"),
-  });
+  }); */
+
+  // Usamos o VooValidator para validar os dados
+  const validate = async (values) => {
+    try {
+      await VooValidator.validate(values, { abortEarly: false });
+      return {};
+    } catch (err) {
+      const errors = err.inner.reduce((acc, error) => {
+        acc[error.path] = error.message; // Mapeamos el error al campo correspondiente
+        return acc;
+      }, {});
+      return errors;
+    }
+  };
 
   const salvarVoo = (dados) => {
     try {
       let voos = JSON.parse(localStorage.getItem("voos")) || [];
 
       if (identificador) {
-        // Verifica si el identificador ha cambiado (no debería en edición)
+        // Verifica se o identificador mudou (não deveria na edição)
         voos = voos.map((voo) => (voo.identificador === identificador ? dados : voo));
       } else {
-        // Verifica si el identificador ya existe para evitar duplicados
+        // Verifica se o identificador já existe para evitar duplicados
         const existe = voos.some(voo => voo.identificador === dados.identificador);
         if (existe) {
           setErrorMessage("Já existe um voo com esse identificador.");
@@ -103,7 +118,7 @@ export default function VooFormPage() {
       <Formik
         initialValues={vooInicial}
         enableReinitialize
-        validationSchema={validationSchema}
+        validate={validate} // Usamos a função de validação
         onSubmit={(values) => salvarVoo(values)}
       >
         {({
@@ -239,14 +254,12 @@ export default function VooFormPage() {
               </Form.Control.Feedback>
             </Form.Group>
 
-            <div className="text-center">
-              <Button type="submit" variant="success">
-                <FaCheck /> {identificador ? "Salvar" : "Cadastrar"}
-              </Button>
-              <Link href="/voo" className="btn btn-secondary ms-2">
-                <MdOutlineArrowBack /> Voltar
-              </Link>
-            </div>
+            <Button variant="primary" type="submit" className="me-2">
+              {identificador ? "Salvar" : "Criar"} <FaCheck />
+            </Button>
+            <Link href="/voo" className="btn btn-secondary">
+              <MdOutlineArrowBack /> Voltar
+            </Link>
           </Form>
         )}
       </Formik>
