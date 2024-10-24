@@ -1,15 +1,17 @@
-"use client"; 
+"use client";
 
 import Pagina from "@/app/components/Pagina";
 import { Formik } from "formik";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { Button, Form, FormControl, Alert } from "react-bootstrap";
 import { FaCheck } from "react-icons/fa";
 import { MdOutlineArrowBack } from "react-icons/md";
-import aeroportoValidator from "@/validators/aeroportoValidator"; // Importando o validor
+import aeroportoValidator from "@/validators/aeroportoValidator"; // Importando o validador
 import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid"; 
+import { v4 as uuidv4 } from "uuid";
+import { mask } from "remask";
+
 export default function Page({ params }) {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
@@ -25,12 +27,12 @@ export default function Page({ params }) {
   const empresas = JSON.parse(localStorage.getItem('aeroporto')) || [];
   const aeroportoId = typeof params.id === 'string' ? params.id : params.id?.toString();
 
-  // Carregar os dados do aeroporto ao entrar na página de edição
+
   useEffect(() => {
     if (aeroportoId) {
       const aeroportoEncontrado = empresas.find(item => item.id === aeroportoId);
       if (aeroportoEncontrado) {
-        setAeroporto(aeroportoEncontrado); // Preenche os campos com os dados do aeroporto
+        setAeroporto(aeroportoEncontrado);
       }
     }
   }, [aeroportoId]);
@@ -42,7 +44,7 @@ export default function Page({ params }) {
         const index = empresas.findIndex(item => item.id === aeroportoId);
         empresas[index] = { id: aeroportoId, ...dados }; // Atualiza os dados do aeroporto
       } else {
-        const novoId = uuidv4(); // Gera um novo UUID
+        const novoId = uuidv4();
         empresas.push({ id: novoId, ...dados });
       }
 
@@ -54,7 +56,7 @@ export default function Page({ params }) {
     }
   };
 
-  // Retorno da página
+
   return (
     <Pagina titulo={aeroportoId ? "Editar Aeroporto" : "Novo Aeroporto"}>
       {errorMessage && (
@@ -63,12 +65,12 @@ export default function Page({ params }) {
         </Alert>
       )}
       <Formik
-        enableReinitialize // Isso garante que o Formik será atualizado quando o aeroporto mudar
+        enableReinitialize
         initialValues={aeroporto}
-        validationSchema={aeroportoValidator} // Usando o aeroportoValidator para validação
+        validationSchema={aeroportoValidator}
         onSubmit={salvarAeroporto}
       >
-        {({ values, errors, touched, handleChange, handleSubmit, handleBlur }) => (
+        {({ values, errors, touched, handleChange, handleSubmit, handleBlur, setFieldValue }) => (
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="nome">
               <Form.Label>Nome</Form.Label>
@@ -91,8 +93,12 @@ export default function Page({ params }) {
                 type="text"
                 name="sigla"
                 value={values.sigla}
-                onChange={handleChange}
+                onChange={(e) => {
+                  const maskedValue = mask(e.target.value, "AAA"); // Máscara para sigla
+                  setFieldValue("sigla", maskedValue);
+                }}
                 onBlur={handleBlur}
+                placeholder="Ex: ABC" // Placeholder para mostrar a máscara
                 isInvalid={touched.sigla && !!errors.sigla}
               />
               {touched.sigla && errors.sigla && (
@@ -106,8 +112,12 @@ export default function Page({ params }) {
                 type="text"
                 name="uf"
                 value={values.uf}
-                onChange={handleChange}
+                onChange={(e) => {
+                  const maskedValue = mask(e.target.value, "AA"); // Máscara para UF
+                  setFieldValue("uf", maskedValue);
+                }}
                 onBlur={handleBlur}
+                placeholder="Ex: SP" // Placeholder para mostrar a máscara
                 isInvalid={touched.uf && !!errors.uf}
               />
               {touched.uf && errors.uf && (

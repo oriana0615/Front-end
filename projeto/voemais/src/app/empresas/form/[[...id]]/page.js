@@ -1,8 +1,8 @@
 'use client'
 
 import Pagina from "@/app/components/Pagina";
-// import * as Yup from "yup";  // <- Comentado o uso do Yup
-import EmpresaValidator from "@/validators/EmpresaValidator";  // Novo validador
+// import * as Yup from "yup";  //  uso do Yup
+import EmpresaValidator from "@/validators/EmpresaValidator";  
 
 import { Formik } from "formik";
 import Link from "next/link";

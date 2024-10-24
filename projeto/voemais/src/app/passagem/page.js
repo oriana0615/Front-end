@@ -1,5 +1,4 @@
-"use client"; 
-
+"use client";
 import Pagina from "@/app/components/Pagina";
 import Link from "next/link";
 import { Table, Alert } from "react-bootstrap";
@@ -18,12 +17,16 @@ export default function Page() {
     setPassagens(passagensSalvas);
   }, []);
 
-  // Função para formatar o preço com duas casas decimais
+ 
   const formatarPreco = (preco) => {
-    return preco.toFixed(2);
+    const precoNumero = parseFloat(preco); 
+    if (isNaN(precoNumero)) {
+      return "00.0"; 
+    }
+    return precoNumero.toFixed(2);
   };
 
-  // Função para excluir passagem
+  
   function excluir(id) {
     if (confirm('Deseja realmente excluir a passagem?')) {
       const novasPassagens = passagens.filter(item => item.id !== id);
@@ -42,7 +45,6 @@ export default function Page() {
       <Link href="/passagem/form" className="btn btn-primary mb-3">
         <FaPlusCircle /> Nova Passagem
       </Link>
-
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -54,7 +56,6 @@ export default function Page() {
             <th>Ações</th>
           </tr>
         </thead>
-
         <tbody>
           {passagens.map((passagem) => (
             <tr key={passagem.id}>

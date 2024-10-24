@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import Pagina from "@/app/components/Pagina";
 import Link from "next/link";
@@ -6,190 +6,216 @@ import { Table, Alert } from "react-bootstrap";
 import { FaPlusCircle, FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation"; // Corrigido o import do useRouter
 import { Formik } from "formik";
 import { Button, Form, FormControl } from "react-bootstrap";
-import PassagemValidator from "@/validators/PassagemValidator"; // Novo validador para passagem
-// import * as Yup from 'yup';  // <- uso do Yup, agora comentado
+// import * as Yup from "yup"; // Comentado porque no se usará Yup
+import PassageiroValidator from "@/validators/PassageiroValidator"; // Validador personalizado
+import { mask } from "remask"; // Importa a biblioteca remask
 
 export default function Page({ params }) {
-  const [passagens, setPassagens] = useState([]);
-  const searchParams = useSearchParams();
-  const success = searchParams.get("success");
-  const [passagem, setPassagem] = useState({
-    vooId: '',
-    passageiroId: '',
-    assento: '',
-    preco: ''
+  const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [passageiro, setPassageiro] = useState({
+    nome: "",
+    tipo_documento: "",
+    documento: "",
+    email: "",
+    telefone: "",
+    dat_nascimento: "",
   });
 
-  const passagensSalvas = JSON.parse(localStorage.getItem('passagens')) || [];
-  const passagemId = params?.id ? parseInt(params.id) : null;
+  const passageiros = JSON.parse(localStorage.getItem("passageiros")) || [];
+  const passageiroId = params?.id ? parseInt(params.id) : null;
 
-  // Carregar os dados da passagem ao entrar na página de edição
+  // Carregar os dados do passageiro ao entrar na página de edição
   useEffect(() => {
-    if (passagemId) {
-      const passagemEncontrada = passagensSalvas.find(item => item.id === passagemId);
-      if (passagemEncontrada) {
-        setPassagem(passagemEncontrada); // Preenche os campos com os dados da passagem
+    if (passageiroId) {
+      const passageiroEncontrado = passageiros.find(
+        (item) => item.id === passageiroId
+      );
+      if (passageiroEncontrado) {
+        setPassageiro(passageiroEncontrado); // Preenche os campos com os dados do passageiro
       }
     }
-  }, [passagemId]);
+  }, [passageiroId]);
 
- 
-  const formatarPreco = (preco) => {
-    return preco.toFixed(2);
-  };
-
-  // Função para excluir passagem
-  function excluir(id) {
-    if (confirm('Deseja realmente excluir a passagem?')) {
-      const novasPassagens = passagens.filter(item => item.id !== id);
-      localStorage.setItem('passagens', JSON.stringify(novasPassagens));
-      setPassagens(novasPassagens);
-    }
-  }
-
-  // (novo ou atualizado)
-  function salvarPassagem(dados) {
+  // Usando PassageiroValidator do arquivo validators
+  function salvarPassageiro(dados) {
     try {
-      if (passagemId) {
-        const index = passagensSalvas.findIndex(item => item.id === passagemId);
-        passagensSalvas[index] = { id: passagemId, ...dados }; // Atualiza os dados da passagem
+      if (passageiroId) {
+        const index = passageiros.findIndex((item) => item.id === passageiroId);
+        passageiros[index] = { id: passageiroId, ...dados }; // Atualiza os dados do passageiro
       } else {
-        dados.id = v4(); // Gerando ID único para nova passagem
-        passagensSalvas.push(dados);
+        const novoId =
+          passageiros.length > 0
+            ? Math.max(...passageiros.map((p) => p.id)) + 1
+            : 1;
+        passageiros.push({ id: novoId, ...dados });
       }
 
-      localStorage.setItem("passagens", JSON.stringify(passagensSalvas));
+      localStorage.setItem("passageiros", JSON.stringify(passageiros));
+      router.push("/passageiro?success=true");
     } catch (error) {
-      console.error("Erro ao salvar passagem:", error);
+      console.error("Erro ao salvar passageiro:", error);
+      setErrorMessage("Ocorreu um erro ao salvar o passageiro. Tente novamente.");
     }
   }
 
   return (
-    <Pagina titulo="Passagens">
-      {success && (
-        <Alert variant="success">
-          Passagem cadastrada com sucesso!
+    <Pagina titulo={passageiroId ? "Editar Passageiro" : "Novo Passageiro"}>
+      {errorMessage && (
+        <Alert variant="danger" onClose={() => setErrorMessage("")} dismissible>
+          {errorMessage}
         </Alert>
       )}
 
-      <Link href="/passagem/form" className="btn btn-primary mb-3">
-        <FaPlusCircle /> Nova Passagem
-      </Link>
-
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Voo Id</th>
-            <th>Passageiro Id</th>
-            <th>Assento</th>
-            <th>Preço</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {passagensSalvas.map((passagem) => (
-            <tr key={passagem.id}>
-              <td>{passagem.id}</td>
-              <td>{passagem.vooId}</td>
-              <td>{passagem.passageiroId}</td>
-              <td>{passagem.assento}</td>
-              <td>R$ {formatarPreco(passagem.preco)}</td>
-              <td>
-                <Link href={`/passagem/form/${passagem.id}`}>
-                  <FaRegEdit title="Editar" className="text-primary" />
-                </Link>
-                <MdDelete
-                  title="Excluir"
-                  className="text-danger"
-                  onClick={() => excluir(passagem.id)}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-
       <Formik
-        enableReinitialize
-        initialValues={passagem}
-        validationSchema={PassagemValidator} // Novo validador
-        onSubmit={salvarPassagem}
+        enableReinitialize // Isso garante que o Formik será atualizado quando o passageiro mudar
+        initialValues={passageiro}
+        validationSchema={PassageiroValidator} // Usando o PassageiroValidator para validação
+        onSubmit={salvarPassageiro}
       >
-        {({ values, errors, touched, handleChange, handleSubmit, handleBlur }) => (
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleSubmit,
+          handleBlur,
+          setFieldValue,
+        }) => (
           <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="vooId">
-              <Form.Label>Voo ID</Form.Label>
+            <Form.Group controlId="nome">
+              <Form.Label>Nome</Form.Label>
               <FormControl
                 type="text"
-                name="vooId"
-                value={values.vooId}
+                name="nome"
+                value={values.nome}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                isInvalid={touched.vooId && !!errors.vooId}
+                isInvalid={touched.nome && !!errors.nome}
               />
-              {touched.vooId && errors.vooId && (
-                <Form.Control.Feedback type="invalid">{errors.vooId}</Form.Control.Feedback>
+              {touched.nome && errors.nome && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.nome}
+                </Form.Control.Feedback>
               )}
             </Form.Group>
 
-            <Form.Group controlId="passageiroId">
-              <Form.Label>Passageiro ID</Form.Label>
+            <Form.Group controlId="tipo_documento">
+              <Form.Label>Tipo de Documento</Form.Label>
+              <FormControl
+                as="select"
+                name="tipo_documento"
+                value={values.tipo_documento}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                isInvalid={touched.tipo_documento && !!errors.tipo_documento}
+              >
+                <option value="">Selecione o tipo de documento</option>
+                <option value="RG">RG</option>
+                <option value="DNI">DNI</option>
+                <option value="CNH">CNH</option>
+                <option value="Título de eleitor eletrônico">
+                  Título de eleitor eletrônico
+                </option>
+                <option value="Passaporte válido">Passaporte válido</option>
+              </FormControl>
+              {touched.tipo_documento && errors.tipo_documento && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.tipo_documento}
+                </Form.Control.Feedback>
+              )}
+            </Form.Group>
+
+            <Form.Group controlId="documento">
+              <Form.Label>Documento</Form.Label>
               <FormControl
                 type="text"
-                name="passageiroId"
-                value={values.passageiroId}
+                name="documento"
+                value={values.documento}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                isInvalid={touched.passageiroId && !!errors.passageiroId}
+                isInvalid={touched.documento && !!errors.documento}
               />
-              {touched.passageiroId && errors.passageiroId && (
-                <Form.Control.Feedback type="invalid">{errors.passageiroId}</Form.Control.Feedback>
+              {touched.documento && errors.documento && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.documento}
+                </Form.Control.Feedback>
               )}
             </Form.Group>
 
-            <Form.Group controlId="assento">
-              <Form.Label>Assento</Form.Label>
+            <Form.Group controlId="email">
+              <Form.Label>Email</Form.Label>
+              <FormControl
+                type="email"
+                name="email"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                isInvalid={touched.email && !!errors.email}
+              />
+              {touched.email && errors.email && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.email}
+                </Form.Control.Feedback>
+              )}
+            </Form.Group>
+
+            <Form.Group controlId="telefone">
+              <Form.Label>Telefone</Form.Label>
               <FormControl
                 type="text"
-                name="assento"
-                value={values.assento}
-                onChange={handleChange}
+                name="telefone"
+                value={values.telefone}
+                onChange={(e) => {
+                  const maskedValue = mask(e.target.value, [
+                    "(99) 99999-9999", // Máscara para celular
+                    "(99) 9999-9999",  // Máscara para telefone fixo
+                  ]);
+                  setFieldValue("telefone", maskedValue);
+                }}
                 onBlur={handleBlur}
-                isInvalid={touched.assento && !!errors.assento}
+                placeholder="Ex: (61) 98765-4321" // Placeholder para mostrar a máscara
+                isInvalid={touched.telefone && !!errors.telefone}
               />
-              {touched.assento && errors.assento && (
-                <Form.Control.Feedback type="invalid">{errors.assento}</Form.Control.Feedback>
+              {touched.telefone && errors.telefone && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.telefone}
+                </Form.Control.Feedback>
               )}
             </Form.Group>
 
-            <Form.Group controlId="preco">
-              <Form.Label>Preço</Form.Label>
+
+
+
+            <Form.Group controlId="dat_nascimento">
+              <Form.Label>Data de Nascimento</Form.Label>
               <FormControl
-                type="number"
-                name="preco"
-                value={values.preco}
-                onChange={handleChange}
+                type="text"
+                //type="date" //  'date' para exibir o seletor de calendário
+                name="dat_nascimento"
+                value={values.dat_nascimento}
+                onChange={(e) => {
+                  const maskedValue = mask(e.target.value, "99/99/9999");
+                  setFieldValue("dat_nascimento", maskedValue); // Aplicando máscara à data de nascimento
+                }}
                 onBlur={handleBlur}
-                isInvalid={touched.preco && !!errors.preco}
+                isInvalid={touched.dat_nascimento && !!errors.dat_nascimento}
               />
-              {touched.preco && errors.preco && (
-                <Form.Control.Feedback type="invalid">{errors.preco}</Form.Control.Feedback>
+              {touched.dat_nascimento && errors.dat_nascimento && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.dat_nascimento}
+                </Form.Control.Feedback>
               )}
             </Form.Group>
 
-            <div className="text-center">
-              <Button type="submit" variant="success">
-                Salvar
-              </Button>
-              <Link href="/passagem" className="btn btn-danger ms-2">
-                Voltar
-              </Link>
-            </div>
+
+            <Button type="submit" className="mt-3">
+              {passageiroId ? "Atualizar Passageiro" : "Cadastrar Passageiro"}
+            </Button>
           </Form>
         )}
       </Formik>

@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import Pagina from "@/app/components/Pagina";
 import { Formik } from "formik";
@@ -8,7 +8,8 @@ import { Button, Form, FormControl, Alert } from "react-bootstrap";
 import { FaCheck } from "react-icons/fa";
 import { MdOutlineArrowBack } from "react-icons/md";
 import { useEffect, useState } from "react";
-import VooValidator from "@/validators/VooValidator"; // Importa tu validador
+import VooValidator from "@/validators/VooValidator";
+import { mask, unMask } from "remask";
 
 export default function VooFormPage() {
   const router = useRouter();
@@ -86,10 +87,10 @@ export default function VooFormPage() {
       let voos = JSON.parse(localStorage.getItem("voos")) || [];
 
       if (identificador) {
-        // Verifica se o identificador mudou (não deveria na edição)
+        
         voos = voos.map((voo) => (voo.identificador === identificador ? dados : voo));
       } else {
-        // Verifica se o identificador já existe para evitar duplicados
+        
         const existe = voos.some(voo => voo.identificador === dados.identificador);
         if (existe) {
           setErrorMessage("Já existe um voo com esse identificador.");
@@ -118,7 +119,7 @@ export default function VooFormPage() {
       <Formik
         initialValues={vooInicial}
         enableReinitialize
-        validate={validate} // Usamos a função de validação
+        validate={validate} 
         onSubmit={(values) => salvarVoo(values)}
       >
         {({
@@ -140,13 +141,23 @@ export default function VooFormPage() {
               />
             </Form.Group>
 
+
             <Form.Group className="mb-3" controlId="identificador">
               <Form.Label>Identificador</Form.Label>
               <FormControl
                 type="text"
                 name="identificador"
                 value={values.identificador}
-                onChange={handleChange}
+                placeholder="Ex: ABC-1234"
+                onChange={(e) => {
+                  const maskedValue = mask(e.target.value, ["AAA-9999"]);
+                  handleChange({
+                    target: {
+                      name: e.target.name,
+                      value: maskedValue,
+                    },
+                  });
+                }}
                 onBlur={handleBlur}
                 isInvalid={touched.identificador && !!errors.identificador}
                 required
@@ -156,6 +167,8 @@ export default function VooFormPage() {
                 {errors.identificador}
               </Form.Control.Feedback>
             </Form.Group>
+
+
 
             <Form.Group className="mb-3" controlId="data_checkin">
               <Form.Label>Data de Check-in</Form.Label>
@@ -189,13 +202,23 @@ export default function VooFormPage() {
               </Form.Control.Feedback>
             </Form.Group>
 
+
             <Form.Group className="mb-3" controlId="id_origem">
               <Form.Label>ID de Origem</Form.Label>
               <FormControl
-                type="number"
+                type="text"
                 name="id_origem"
                 value={values.id_origem}
-                onChange={handleChange}
+                placeholder="Ex: 2"
+                onChange={(e) => {
+                  const maskedValue = mask(e.target.value, ["999999"]);
+                  handleChange({
+                    target: {
+                      name: e.target.name,
+                      value: maskedValue,
+                    },
+                  });
+                }}
                 onBlur={handleBlur}
                 isInvalid={touched.id_origem && !!errors.id_origem}
                 required
@@ -204,6 +227,8 @@ export default function VooFormPage() {
                 {errors.id_origem}
               </Form.Control.Feedback>
             </Form.Group>
+
+
 
             <Form.Group className="mb-3" controlId="id_destino">
               <Form.Label>ID de Destino</Form.Label>
@@ -237,14 +262,24 @@ export default function VooFormPage() {
               </Form.Control.Feedback>
             </Form.Group>
 
+
+
             <Form.Group className="mb-3" controlId="preco">
               <Form.Label>Preço</Form.Label>
               <FormControl
-                type="number"
-                step="0.01"
+                type="text"
                 name="preco"
                 value={values.preco}
-                onChange={handleChange}
+                placeholder="Ex: 9999.99"
+                onChange={(e) => {
+                  const maskedValue = mask(unMask(e.target.value), ["9999.99"]);
+                  handleChange({
+                    target: {
+                      name: e.target.name,
+                      value: maskedValue,
+                    },
+                  });
+                }}
                 onBlur={handleBlur}
                 isInvalid={touched.preco && !!errors.preco}
                 required
