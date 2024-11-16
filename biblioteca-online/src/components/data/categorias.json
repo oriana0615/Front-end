@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "nome": "Ficção",
+    "descricao": "Livros de narrativa imaginativa."
+  },
+  {
+    "id": 2,
+    "nome": "Não-Ficção",
+    "descricao": "Livros baseados em fatos reais e informações."
+  },
+  {
+    "id": 3,
+    "nome": "Biografia",
+    "descricao": "Histórias da vida de pessoas reais."
+  },
+  {
+    "id": 4,
+    "nome": "Fantasia",
+    "descricao": "Livros que envolvem elementos mágicos e sobrenaturais."
+  },
+  {
+    "id": 5,
+    "nome": "Romance",
+    "descricao": "Histórias centradas em relacionamentos amorosos."
+  }
+]
