@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "nome": "Machado de Assis",
+    "nacionalidade": "Brasileiro"
+  },
+  {
+    "id": 2,
+    "nome": "Clarice Lispector",
+    "nacionalidade": "Brasileira"
+  },
+  {
+    "id": 3,
+    "nome": "Jorge Luis Borges",
+    "nacionalidade": "Argentino"
+  },
+  {
+    "id": 4,
+    "nome": "Gabriel García Márquez",
+    "nacionalidade": "Colombiano"
+  },
+  {
+    "id": 5,
+    "nome": "Virginia Woolf",
+    "nacionalidade": "Britânica"
+  }
+]

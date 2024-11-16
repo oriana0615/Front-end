@@ -1,0 +1,152 @@
+[
+  {
+    "id": 1,
+    "titulo": "Dom Casmurro",
+    "autor": "Machado de Assis",
+    "categoria": "Ficção",
+    "dataPublicacao": "1899-01-01",
+    "quantidade": 5,
+    "purchasePrice": 30.50,
+    "rentalPrice": 5.00
+  },
+  {
+    "id": 2,
+    "titulo": "A Hora da Estrela",
+    "autor": "Clarice Lispector",
+    "categoria": "Ficção",
+    "dataPublicacao": "1977-09-01",
+    "quantidade": 3,
+    "purchasePrice": 25.00,
+    "rentalPrice": 4.50
+  },
+  {
+    "id": 3,
+    "titulo": "O Aleph",
+    "autor": "Jorge Luis Borges",
+    "categoria": "Fantasia",
+    "dataPublicacao": "1945-05-01",
+    "quantidade": 4,
+    "purchasePrice": 20.00,
+    "rentalPrice": 3.50
+  },
+  {
+    "id": 4,
+    "titulo": "Cem Anos de Solidão",
+    "autor": "Gabriel García Márquez",
+    "categoria": "Ficção",
+    "dataPublicacao": "1967-06-05",
+    "quantidade": 6,
+    "purchasePrice": 35.00,
+    "rentalPrice": 6.00
+  },
+  {
+    "id": 5,
+    "titulo": "Mrs Dalloway",
+    "autor": "Virginia Woolf",
+    "categoria": "Romance",
+    "dataPublicacao": "1925-05-14",
+    "quantidade": 2,
+    "purchasePrice": 28.00,
+    "rentalPrice": 4.75
+  },
+  {
+    "id": 6,
+    "titulo": "Sapiens: Uma Breve História da Humanidade",
+    "autor": "Yuval Noah Harari",
+    "categoria": "Não-Ficção",
+    "dataPublicacao": "2011-01-01",
+    "quantidade": 7,
+    "purchasePrice": 40.00,
+    "rentalPrice": 7.50
+  },
+  {
+    "id": 7,
+    "titulo": "Steve Jobs",
+    "autor": "Walter Isaacson",
+    "categoria": "Biografia",
+    "dataPublicacao": "2011-10-24",
+    "quantidade": 4,
+    "purchasePrice": 35.00,
+    "rentalPrice": 6.50
+  },
+  {
+    "id": 8,
+    "titulo": "O Senhor dos Anéis: A Sociedade do Anel",
+    "autor": "J.R.R. Tolkien",
+    "categoria": "Fantasia",
+    "dataPublicacao": "1954-07-29",
+    "quantidade": 10,
+    "purchasePrice": 45.00,
+    "rentalPrice": 8.00
+  },
+  {
+    "id": 9,
+    "titulo": "Educated",
+    "autor": "Tara Westover",
+    "categoria": "Biografia",
+    "dataPublicacao": "2018-02-20",
+    "quantidade": 5,
+    "purchasePrice": 32.00,
+    "rentalPrice": 5.75
+  },
+  {
+    "id": 10,
+    "titulo": "The Power of Habit",
+    "autor": "Charles Duhigg",
+    "categoria": "Não-Ficção",
+    "dataPublicacao": "2012-02-28",
+    "quantidade": 6,
+    "purchasePrice": 29.00,
+    "rentalPrice": 4.25
+  },
+  {
+    "id": 11,
+    "titulo": "Orgulho e Preconceito",
+    "autor": "Jane Austen",
+    "categoria": "Romance",
+    "dataPublicacao": "1813-01-28",
+    "quantidade": 8,
+    "purchasePrice": 22.00,
+    "rentalPrice": 3.75
+  },
+  {
+    "id": 12,
+    "titulo": "Becoming",
+    "autor": "Michelle Obama",
+    "categoria": "Biografia",
+    "dataPublicacao": "2018-11-13",
+    "quantidade": 5,
+    "purchasePrice": 30.00,
+    "rentalPrice": 5.50
+  },
+  {
+    "id": 13,
+    "titulo": "1984",
+    "autor": "George Orwell",
+    "categoria": "Ficção",
+    "dataPublicacao": "1949-06-08",
+    "quantidade": 9,
+    "purchasePrice": 25.00,
+    "rentalPrice": 4.00
+  },
+  {
+    "id": 14,
+    "titulo": "O Código Da Vinci",
+    "autor": "Dan Brown",
+    "categoria": "Ficção",
+    "dataPublicacao": "2003-04-03",
+    "quantidade": 7,
+    "purchasePrice": 27.50,
+    "rentalPrice": 4.50
+  },
+  {
+    "id": 15,
+    "titulo": "A Brief History of Time",
+    "autor": "Stephen Hawking",
+    "categoria": "Não-Ficção",
+    "dataPublicacao": "1988-03-01",
+    "quantidade": 6,
+    "purchasePrice": 24.00,
+    "rentalPrice": 4.25
+  }
+]
