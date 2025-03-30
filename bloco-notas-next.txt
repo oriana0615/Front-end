@@ -1,0 +1,69 @@
+//Atualizar o npm 
+
+npm i -g npm
+
+//Criando projeto com next.js
+
+npx create-next-app@latest
+
+exercicio-filmes-2024
+
+Sequência: N, N, N, S, S, N
+
+Code <nome da pasta> para abrir o vs-code direto na pasta
+
+ctrl " abre terminal do vs-code
+
+ctrl , abre as configurações do vs code
+
+//Executa o projeto
+
+npm run dev
+
+//Extensões
+
+Easy Snippet
+
+//Atalhos
+Ctrl / espaço ao final da palavra
+
+
+//Executar Bootstrap
+
+npm install react-bootstrap bootstrap
+
+//Importar o Css
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+
+ctrl shift p, seleciona save from selection
+
+npm install axios
+
+
+npm install formik
+
+
+
+=--------------------------------------------------=
+
+
+
+
+criar projeto 
+
+instalar bootrap, action e react-icons
+
+botar o css boortttrs 
+
+copiar as pastas de componentes e services
+mudar dentro 
+
+
+rodar projeto 
+
+trocar css
+-------------------
+npm i uuid
